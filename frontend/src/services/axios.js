@@ -52,6 +52,10 @@ api.interceptors.response.use(
       error.safe = safeSummary;
     } catch (attachErr) {}
 
+    const status = error?.response?.status;
+    const data = error?.response?.data;
+
+    if (error?.response) {
       switch (status) {
         case 401:
           // Unauthorized - token expired or invalid
