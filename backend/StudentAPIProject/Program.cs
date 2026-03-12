@@ -39,7 +39,7 @@ builder.Services.AddCors(options =>
     
     options.AddPolicy("ProductionPolicy", policy =>
     {
-        policy.WithOrigins("https://yourdomain.com") // Replace with your production domain
+        policy.WithOrigins("https://edumange.vercel.app") // Replace with your production domain
               .AllowAnyMethod()
               .AllowAnyHeader()
               .AllowCredentials();
@@ -222,6 +222,34 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Health check endpoint (for Docker health checks and monitoring)
+app.MapGet("/health", async (ApplicationDbContext dbContext) =>
+{
+    try
+    {
+        // Try to connect to the database
+        await dbContext.Database.ExecuteSqlRawAsync("SELECT 1");
+        return Results.Ok(new 
+        { 
+            status = "healthy", 
+            timestamp = DateTime.UtcNow,
+            environment = app.Environment.EnvironmentName
+        });
+    }
+    catch (Exception ex)
+    {
+        return Results.StatusCode(503, new 
+        { 
+            status = "unhealthy", 
+            message = "Database connection failed",
+            timestamp = DateTime.UtcNow
+        });
+    }
+})
+.WithName("Health")
+.WithOpenApi()
+.AllowAnonymous();
 
 app.MapControllers();
 

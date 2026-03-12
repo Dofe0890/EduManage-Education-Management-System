@@ -1,0 +1,54 @@
+version: "3.8"
+
+services:
+  # SQL Server Database
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: edumange-sqlserver
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: "YourPassword123!@#"
+      MSSQL_PID: Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "YourPassword123!@#" -Q "SELECT 1"
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # EduManage API
+  edumange-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: edumange-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__DefaultConnection: "Server=sqlserver;Database=EduManageDB;User Id=sa;Password=YourPassword123!@#;TrustServerCertificate=False;Connection Timeout=30;Encrypt=false;"
+      JWT__Key: "YourSuperSecretKeyForJWTThatIsAtLeast32CharactersLong!!!!!"
+      JWT__Issuer: "EduManage"
+      JWT__Audience: "EduManageUsers"
+      JWT__DurationInMintues: "60"
+    ports:
+      - "8080:8080"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  sqlserver-data:
+
+networks:
+  default:
+    name: edumange-network
