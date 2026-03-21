@@ -53,12 +53,7 @@ export const navItems = [
     icon: FiUser,
     roles: ["Admin"],
   },
-  {
-    name: "Reports",
-    href: "/app/reports",
-    icon: FiFileText,
-    roles: ["Admin", "User"],
-  },
+
   {
     name: "Settings",
     href: "/app/settings",

@@ -1,4 +1,4 @@
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import React, { useMemo, useCallback } from "react";
 import {
@@ -7,6 +7,11 @@ import {
   FiAward,
   FiCalendar,
   FiActivity,
+  FiTrendingUp,
+  FiCheckCircle,
+  FiPlus,
+  FiFileText,
+  FiChevronRight,
 } from "react-icons/fi";
 import { queryKeys } from "../../config/queryClient";
 import { teacherService } from "../../services/teacherService";
@@ -19,6 +24,7 @@ import Loading from "../../components/common/Loading";
 
 const DashboardPage = () => {
   const loaderData = useLoaderData();
+  const navigate = useNavigate();
   const { teacherId: authTeacherId } = useAuth();
   const {
     dashboardMetricsQuery,
@@ -165,32 +171,65 @@ const DashboardPage = () => {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Welcome Section */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-[var(--grey-900)] dark:text-[var(--grey-100)]">
-            Dashboard
-          </h1>
-          <p className="mt-1 text-sm text-[var(--grey-600)] dark:text-[var(--grey-400)]">
-            Welcome back ,{" "}
-            <span className="font-bold text-lg text-primary-600 ">
-              {welcomeMessage}!
-            </span>{" "}
-            Teacher Portal
-          </p>
+    <div className="space-y-8 pb-10">
+      {/* Enhanced Welcome Section */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary-600 to-indigo-700 p-8 text-white shadow-lg">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">
+              Welcome back, {welcomeMessage}!
+            </h1>
+            <p className="mt-2 text-primary-100 flex items-center">
+              <span className="inline-block w-2 h-2 rounded-full bg-green-400 mr-2 animate-pulse"></span>
+              Teacher Portal • {subject?.name || "Educator"}
+            </p>
+          </div>
+          <div className="flex items-center space-x-3">
+            <button
+              onClick={() => navigate("/attendance")}
+              className="flex items-center px-4 py-2 bg-white/20 hover:bg-white/30 backdrop-blur-md rounded-lg transition-all text-sm font-medium border border-white/10"
+            >
+              <FiCheckCircle className="mr-2" /> Mark Attendance
+            </button>
+            <button
+              onClick={() => navigate("/grades/create")}
+              className="flex items-center px-4 py-2 bg-white text-primary-600 hover:bg-primary-50 rounded-lg transition-all text-sm font-medium shadow-sm"
+            >
+              <FiPlus className="mr-2" /> New Grade
+            </button>
+          </div>
         </div>
+        {/* Background decorative elements */}
+        <div className="absolute top-0 right-0 -mt-10 -mr-10 h-40 w-40 rounded-full bg-white/10 blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 -mb-10 -ml-10 h-40 w-40 rounded-full bg-indigo-500/20 blur-3xl"></div>
       </div>
+
       {/* Teacher Student Count Dashboard */}
       <TeacherStudentCountDashboard teacherStudentCount={teacherStudentCount} />
 
-      {/* Second row: highest average, subject label, highest attendance */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
+      {/* Analytics Highlights */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-1">
           <HighestAverageCard data={highestClassAverage} />
         </div>
 
-        <div className="flex items-center justify-center">
+        <div className="lg:col-span-1 flex flex-col justify-center space-y-4">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm flex items-center justify-between">
+            <div>
+              <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+                Active Subject
+              </p>
+              <h4 className="text-xl font-bold text-primary-600 dark:text-primary-400">
+                {subject?.name || "General"}
+              </h4>
+            </div>
+            <div className="p-3 bg-primary-50 dark:bg-primary-900/30 rounded-full">
+              <FiBook
+                className="text-primary-600 dark:text-primary-400"
+                size={24}
+              />
+            </div>
+          </div>
           <SubjectLabel subject={subject} />
         </div>
 
@@ -199,101 +238,136 @@ const DashboardPage = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Recent Activities */}
-        <div className="card">
-          <div className="card-header">
-            <h3 className="text-lg font-medium text-[var(--grey-900)] dark:text-[var(--grey-100)]">
-              Recent Activities
-            </h3>
+        <div className="card shadow-sm hover:shadow-md transition-shadow">
+          <div className="card-header flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <FiActivity className="text-primary-600" />
+              <h3 className="text-lg font-bold text-[var(--grey-900)] dark:text-[var(--grey-100)]">
+                Recent Activities
+              </h3>
+            </div>
+            <button className="text-sm text-primary-600 hover:underline">
+              View all
+            </button>
           </div>
           <div className="card-body">
-            <div className="space-y-4">
+            <div className="space-y-6">
               {recentActivities?.length > 0 ? (
-                recentActivities.map((activity) => (
-                  <div key={activity.id} className="flex items-start space-x-3">
-                    <div className="p-2 bg-[var(--grey-100)] dark:bg-[var(--grey-700)] rounded-full">
-                      <FiActivity
-                        className="text-[var(--grey-600)] dark:text-[var(--grey-400)]"
-                        size={16}
-                      />
+                recentActivities.map((activity, idx) => (
+                  <div
+                    key={activity.id || idx}
+                    className="flex items-start group"
+                  >
+                    <div className="relative">
+                      <div
+                        className={`p-2 rounded-lg ${idx === 0 ? "bg-primary-50 text-primary-600" : "bg-gray-50 text-gray-400"} dark:bg-gray-800 group-hover:bg-primary-100 transition-colors`}
+                      >
+                        <FiActivity size={18} />
+                      </div>
+                      {idx !== recentActivities.length - 1 && (
+                        <div className="absolute top-10 left-1/2 -translate-x-1/2 w-0.5 h-6 bg-gray-100 dark:bg-gray-700"></div>
+                      )}
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm text-[var(--grey-900)] dark:text-[var(--grey-100)]">
+                    <div className="ml-4 flex-1">
+                      <p className="text-sm font-medium text-[var(--grey-900)] dark:text-[var(--grey-100)] group-hover:text-primary-600 transition-colors">
                         {activity.action}
                       </p>
-                      <p className="text-xs text-[var(--grey-500)] dark:text-[var(--grey-400)]">
-                        by {activity.user} • {activity.time}
-                      </p>
+                      <div className="mt-1 flex items-center text-xs text-[var(--grey-500)] dark:text-[var(--grey-400)]">
+                        <span className="font-semibold">{activity.user}</span>
+                        <span className="mx-2 text-gray-300">•</span>
+                        <span>{activity.time}</span>
+                      </div>
                     </div>
+                    <FiChevronRight className="text-gray-300 group-hover:text-primary-600 transition-colors" />
                   </div>
                 ))
               ) : (
-                <p className="text-sm text-[var(--grey-500)] dark:text-[var(--grey-400)]">
-                  No recent activities
-                </p>
+                <div className="text-center py-8">
+                  <div className="inline-flex p-4 bg-gray-50 dark:bg-gray-800 rounded-full mb-3 text-gray-400">
+                    <FiActivity size={24} />
+                  </div>
+                  <p className="text-sm text-[var(--grey-500)] dark:text-[var(--grey-400)]">
+                    No recent activities to show
+                  </p>
+                </div>
               )}
             </div>
           </div>
         </div>
 
         {/* Quick Actions */}
-        <div className="card">
-          <div className="card-header">
-            <h3 className="text-lg font-medium text-[var(--grey-900)] dark:text-[var(--grey-100)]">
+        <div className="card shadow-sm hover:shadow-md transition-shadow">
+          <div className="card-header flex items-center space-x-2">
+            <FiTrendingUp className="text-primary-600" />
+            <h3 className="text-lg font-bold text-[var(--grey-900)] dark:text-[var(--grey-100)]">
               Quick Actions
             </h3>
           </div>
           <div className="card-body">
             <div className="grid grid-cols-2 gap-4">
-              <button className="p-4 text-left border border-[var(--grey-200)] dark:border-[var(--grey-600)] rounded-lg hover:bg-[var(--grey-50)] dark:hover:bg-[var(--grey-700)] transition-colors">
-                <FiUsers
-                  className="text-[var(--primary-600)] dark:text-[var(--primary-400)] mb-2"
-                  size={24}
-                />
-                <p className="font-medium text-[var(--grey-900)] dark:text-[var(--grey-100)]">
-                  Add Student
-                </p>
-                <p className="text-xs text-[var(--grey-500)] dark:text-[var(--grey-400)]">
-                  Register new student
-                </p>
-              </button>
-              <button className="p-4 text-left border border-[var(--grey-200)] dark:border-[var(--grey-600)] rounded-lg hover:bg-[var(--grey-50)] dark:hover:bg-[var(--grey-700)] transition-colors">
-                <FiCalendar
-                  className="text-[var(--primary-600)] dark:text-[var(--primary-400)] mb-2"
-                  size={24}
-                />
-                <p className="font-medium text-[var(--grey-900)] dark:text-[var(--grey-100)]">
-                  Mark Attendance
-                </p>
-                <p className="text-xs text-[var(--grey-500)] dark:text-[var(--grey-400)]">
-                  Take attendance
-                </p>
-              </button>
-              <button className="p-4 text-left border border-[var(--grey-200)] dark:border-[var(--grey-600)] rounded-lg hover:bg-[var(--grey-50)] dark:hover:bg-[var(--grey-700)] transition-colors">
-                <FiAward
-                  className="text-[var(--primary-600)] dark:text-[var(--primary-400)] mb-2"
-                  size={24}
-                />
-                <p className="font-medium text-[var(--grey-900)] dark:text-[var(--grey-100)]">
-                  Add Grades
-                </p>
-                <p className="text-xs text-[var(--grey-500)] dark:text-[var(--grey-400)]">
-                  Update student grades
-                </p>
-              </button>
-              <button className="p-4 text-left border border-[var(--grey-200)] dark:border-[var(--grey-600)] rounded-lg hover:bg-[var(--grey-50)] dark:hover:bg-[var(--grey-700)] transition-colors">
-                <FiBook
-                  className="text-[var(--primary-600)] dark:text-[var(--primary-400)] mb-2"
-                  size={24}
-                />
-                <p className="font-medium text-[var(--grey-900)] dark:text-[var(--grey-100)]">
-                  Generate Report
-                </p>
-                <p className="text-xs text-[var(--grey-500)] dark:text-[var(--grey-400)]">
-                  View analytics
-                </p>
-              </button>
+              {[
+                {
+                  label: "Add Student",
+                  desc: "Register new",
+                  icon: FiUsers,
+                  color: "blue",
+                  path: "/students/create",
+                },
+                {
+                  label: "Mark Attendance",
+                  desc: "Daily tracker",
+                  icon: FiCalendar,
+                  color: "green",
+                  path: "/attendance",
+                },
+                {
+                  label: "Add Grades",
+                  desc: "Update records",
+                  icon: FiAward,
+                  color: "purple",
+                  path: "/grades/create",
+                },
+                {
+                  label: "Reports",
+                  desc: "View analytics",
+                  icon: FiFileText,
+                  color: "orange",
+                  path: "/reports",
+                },
+              ].map((action) => {
+                const Icon = action.icon;
+                const colorMap = {
+                  blue: "bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-900/20 dark:border-blue-800",
+                  green:
+                    "bg-green-50 text-green-600 border-green-100 dark:bg-green-900/20 dark:border-green-800",
+                  purple:
+                    "bg-purple-50 text-purple-600 border-purple-100 dark:bg-purple-900/20 dark:border-purple-800",
+                  orange:
+                    "bg-orange-50 text-orange-600 border-orange-100 dark:bg-orange-900/20 dark:border-orange-800",
+                };
+
+                return (
+                  <button
+                    key={action.label}
+                    onClick={() => navigate(action.path)}
+                    className="flex flex-col items-center justify-center p-6 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl hover:border-primary-500 hover:shadow-md transition-all group"
+                  >
+                    <div
+                      className={`p-4 rounded-2xl mb-4 ${colorMap[action.color]} group-hover:scale-110 transition-transform`}
+                    >
+                      <Icon size={24} />
+                    </div>
+                    <p className="font-bold text-sm text-[var(--grey-900)] dark:text-[var(--grey-100)]">
+                      {action.label}
+                    </p>
+                    <p className="text-[10px] uppercase tracking-wider font-semibold text-[var(--grey-500)] dark:text-[var(--grey-400)] mt-1">
+                      {action.desc}
+                    </p>
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>

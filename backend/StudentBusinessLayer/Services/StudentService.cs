@@ -32,6 +32,13 @@ namespace StudentBusinessLayer.Services
             if (student == null)
                 throw new ArgumentNullException(nameof(student), "Student cannot be null.");
 
+            if (student.ClassroomId <= 0)
+                throw new ArgumentException("Classroom ID must be a positive number.", nameof(student.ClassroomId));
+
+            var classroomExists = await _unitOfWork.Classrooms.GetByIDAsync(student.ClassroomId);
+            if (classroomExists == null)
+                throw new KeyNotFoundException($"Classroom with ID {student.ClassroomId} does not exist.");
+
             // Set audit fields in the business layer
             student.Status = true; // Active = true
             student.CreatedAt = DateTime.Now;

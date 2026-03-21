@@ -10,6 +10,8 @@ namespace StudentBusinessLayer.Interfaces
         Task<IEnumerable<Attendance>> GetAttendances(AttendanceFilterDTO filter);
         Task DeleteAttendance(int id);
         Task<Attendance> AddNewAttendancePerStudent(Attendance attendance);
+        Task<Attendance> UpdateAttendance(int id, Attendance attendance);
+        Task<IEnumerable<Attendance>> BulkUpdateAttendance(IEnumerable<Attendance> attendances);
         Task<int> CountAttendancePerStudent(int studentId);
 
     }

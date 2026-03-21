@@ -64,6 +64,12 @@ namespace StudentDataAccessLayer.Models
             modelBuilder.Entity<Teacher>()
                 .HasIndex(t => t.UserId).IsUnique();
 
+            modelBuilder.Entity<Attendance>()
+                .HasOne(a => a.Classroom)
+                .WithMany()
+                .HasForeignKey(a => a.ClassroomId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<Subject>().HasData(
     new Subject { Id = 1, Name = "Mathematics", Description = "Study of numbers, algebra, geometry, and calculus." },
     new Subject { Id = 2, Name = "Physics", Description = "Study of matter, energy, and their interactions." },

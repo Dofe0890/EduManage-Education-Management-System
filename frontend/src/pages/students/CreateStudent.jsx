@@ -2,6 +2,14 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStudentContext } from "../../contexts/StudentContext";
 import { studentService } from "../../services/studentService";
+import {
+  FaUserPlus,
+  FaArrowLeft,
+  FaUser,
+  FaCalendarAlt,
+  FaBook,
+} from "react-icons/fa";
+import { ImSpinner2 } from "react-icons/im";
 
 const CreateStudent = () => {
   const navigate = useNavigate();
@@ -10,7 +18,7 @@ const CreateStudent = () => {
     name: "",
     age: "",
     classroomId: 0,
-    status: 1, // Active by default
+    status: 1,
   });
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
@@ -64,7 +72,7 @@ const CreateStudent = () => {
         name: formData.name.trim(),
         age: parseInt(formData.age),
         classroomId: parseInt(formData.classroomId),
-        status: Boolean(parseInt(formData.status)),
+        status: true,
       };
 
       const newStudent = await studentService.create(submissionData);
@@ -82,76 +90,117 @@ const CreateStudent = () => {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500">
       {/* Page Header */}
       <div className="flex items-center justify-between">
-        <div>
-          <h1
-            className="text-3xl font-semibold"
-            style={{ color: "var(--color-text-primary)" }}
+        <div className="flex items-center gap-4">
+          <button
+            onClick={handleCancel}
+            className="p-2 rounded-full transition-all hover:bg-gray-100 dark:hover:bg-gray-800 group"
+            title="Back to Students"
           >
-            Create Student
-          </h1>
-          <p
-            className="text-sm mt-1"
-            style={{ color: "var(--color-text-secondary)" }}
-          >
-            Add a new student to the system
-          </p>
+            <FaArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-primary transition-colors" />
+          </button>
+          <div>
+            <h1
+              className="text-3xl font-bold tracking-tight"
+              style={{ color: "var(--color-text-primary)" }}
+            >
+              Add New Student
+            </h1>
+            <p
+              className="text-sm mt-1"
+              style={{ color: "var(--color-text-secondary)" }}
+            >
+              Fill in the details to enroll a new student in the system.
+            </p>
+          </div>
         </div>
       </div>
 
       {/* Form Container */}
       <div
-        className="rounded-2xl shadow-sm border p-6"
+        className="rounded-2xl shadow-xl border overflow-hidden backdrop-blur-sm"
         style={{
           backgroundColor: "var(--color-surface-primary)",
           borderColor: "var(--color-border-primary)",
         }}
       >
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <div
+          className="h-2 w-full"
+          style={{ backgroundColor: "var(--color-interactive-primary)" }}
+        />
+
+        <form onSubmit={handleSubmit} className="p-8 space-y-8">
           {errors.submit && (
             <div
-              className="p-4 border rounded-lg"
+              className="p-4 border-l-4 rounded-r-lg flex items-center gap-3 animate-shake"
               style={{
-                backgroundColor: "var(--color-error-light)",
+                backgroundColor: "rgba(239, 68, 68, 0.1)",
                 borderColor: "var(--color-error)",
               }}
             >
-              <p className="text-sm" style={{ color: "var(--color-error)" }}>
+              <div className="p-1 rounded-full bg-red-500 text-white">
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </div>
+              <p
+                className="text-sm font-medium"
+                style={{ color: "var(--color-error)" }}
+              >
                 {errors.submit}
               </p>
             </div>
           )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Name Field */}
-            <div>
+            <div className="space-y-2">
               <label
                 htmlFor="name"
-                className="block text-sm font-medium mb-2"
+                className="flex items-center gap-2 text-sm font-semibold"
                 style={{ color: "var(--color-text-primary)" }}
               >
-                Full Name *
+                <FaUser className="w-4 h-4 text-blue-500" />
+                Full Name <span className="text-red-500 ml-0.5">*</span>
               </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:border-transparent transition-colors"
-                style={{
-                  borderColor: "var(--color-border-primary)",
-                  backgroundColor: "var(--color-background-primary)",
-                  color: "var(--color-text-primary)",
-                }}
-                placeholder="Enter student's full name"
-                disabled={isLoading}
-              />
+              <div className="relative group">
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500/20 outline-none transition-all duration-200 ${
+                    errors.name
+                      ? "border-red-500 bg-red-50/10"
+                      : "group-hover:border-blue-400"
+                  }`}
+                  style={{
+                    borderColor: errors.name
+                      ? "var(--color-error)"
+                      : "var(--color-border-primary)",
+                    backgroundColor: "var(--color-background-primary)",
+                    color: "var(--color-text-primary)",
+                  }}
+                  placeholder="e.g. John Doe"
+                  disabled={isLoading}
+                />
+              </div>
               {errors.name && (
                 <p
-                  className="mt-1 text-sm"
+                  className="text-xs font-medium animate-in slide-in-from-top-1"
                   style={{ color: "var(--color-error)" }}
                 >
                   {errors.name}
@@ -160,34 +209,43 @@ const CreateStudent = () => {
             </div>
 
             {/* Age Field */}
-            <div>
+            <div className="space-y-2">
               <label
                 htmlFor="age"
-                className="block text-sm font-medium mb-2"
+                className="flex items-center gap-2 text-sm font-semibold"
                 style={{ color: "var(--color-text-primary)" }}
               >
-                Age *
+                <FaCalendarAlt className="w-4 h-4 text-green-500" />
+                Age <span className="text-red-500 ml-0.5">*</span>
               </label>
-              <input
-                type="number"
-                id="age"
-                name="age"
-                value={formData.age}
-                onChange={handleInputChange}
-                min="0"
-                max="100"
-                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:border-transparent transition-colors"
-                style={{
-                  borderColor: "var(--color-border-primary)",
-                  backgroundColor: "var(--color-background-primary)",
-                  color: "var(--color-text-primary)",
-                }}
-                placeholder="Enter age"
-                disabled={isLoading}
-              />
+              <div className="relative group">
+                <input
+                  type="number"
+                  id="age"
+                  name="age"
+                  value={formData.age}
+                  onChange={handleInputChange}
+                  min="0"
+                  max="100"
+                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500/20 outline-none transition-all duration-200 ${
+                    errors.age
+                      ? "border-red-500 bg-red-50/10"
+                      : "group-hover:border-blue-400"
+                  }`}
+                  style={{
+                    borderColor: errors.age
+                      ? "var(--color-error)"
+                      : "var(--color-border-primary)",
+                    backgroundColor: "var(--color-background-primary)",
+                    color: "var(--color-text-primary)",
+                  }}
+                  placeholder="Enter age"
+                  disabled={isLoading}
+                />
+              </div>
               {errors.age && (
                 <p
-                  className="mt-1 text-sm"
+                  className="text-xs font-medium animate-in slide-in-from-top-1"
                   style={{ color: "var(--color-error)" }}
                 >
                   {errors.age}
@@ -196,33 +254,42 @@ const CreateStudent = () => {
             </div>
 
             {/* Classroom Field */}
-            <div>
+            <div className="space-y-2">
               <label
                 htmlFor="classroomId"
-                className="block text-sm font-medium mb-2"
+                className="flex items-center gap-2 text-sm font-semibold"
                 style={{ color: "var(--color-text-primary)" }}
               >
-                Classroom Id
+                <FaBook className="w-4 h-4 text-purple-500" />
+                Classroom ID <span className="text-red-500 ml-0.5">*</span>
               </label>
-              <input
-                type="number"
-                id="classroomId"
-                name="classroomId"
-                value={formData.classroomId}
-                onChange={handleInputChange}
-                min="1"
-                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:border-transparent transition-colors"
-                style={{
-                  borderColor: "var(--color-border-primary)",
-                  backgroundColor: "var(--color-background-primary)",
-                  color: "var(--color-text-primary)",
-                }}
-                placeholder="Classroom ID"
-                disabled={isLoading}
-              />
+              <div className="relative group">
+                <input
+                  type="number"
+                  id="classroomId"
+                  name="classroomId"
+                  value={formData.classroomId}
+                  onChange={handleInputChange}
+                  min="1"
+                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500/20 outline-none transition-all duration-200 ${
+                    errors.classroomId
+                      ? "border-red-500 bg-red-50/10"
+                      : "group-hover:border-blue-400"
+                  }`}
+                  style={{
+                    borderColor: errors.classroomId
+                      ? "var(--color-error)"
+                      : "var(--color-border-primary)",
+                    backgroundColor: "var(--color-background-primary)",
+                    color: "var(--color-text-primary)",
+                  }}
+                  placeholder="Assign to classroom"
+                  disabled={isLoading}
+                />
+              </div>
               {errors.classroomId && (
                 <p
-                  className="mt-1 text-sm"
+                  className="text-xs font-medium animate-in slide-in-from-top-1"
                   style={{ color: "var(--color-error)" }}
                 >
                   {errors.classroomId}
@@ -230,58 +297,29 @@ const CreateStudent = () => {
               )}
             </div>
 
-            {/* Status Field */}
-            <div>
-              <label
-                htmlFor="status"
-                className="block text-sm font-medium mb-2"
-                style={{ color: "var(--color-text-primary)" }}
-              >
-                Status
-              </label>
-              <select
-                id="status"
-                name="status"
-                value={formData.status}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:border-transparent transition-colors"
-                style={{
-                  borderColor: "var(--color-border-primary)",
-                  backgroundColor: "var(--color-background-primary)",
-                  color: "var(--color-text-primary)",
-                }}
-                disabled={isLoading}
-              >
-                <option value={1}>Active</option>
-                <option value={0}>Inactive</option>
-              </select>
+            {/* Note Section */}
+            <div className="md:col-span-1 flex items-end">
+              <div className="p-4 rounded-xl bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30 w-full">
+                <p className="text-xs text-blue-600 dark:text-blue-400 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                  New students are automatically set as <strong>Active</strong>.
+                </p>
+              </div>
             </div>
           </div>
 
           {/* Action Buttons */}
           <div
-            className="flex items-center justify-end gap-4 pt-6 border-t"
+            className="flex items-center justify-end gap-4 pt-8 border-t"
             style={{ borderTopColor: "var(--color-border-primary)" }}
           >
             <button
               type="button"
               onClick={handleCancel}
-              className="px-4 py-2 rounded-lg transition-colors"
+              className="px-6 py-2.5 rounded-xl font-medium transition-all hover:bg-gray-100 dark:hover:bg-gray-800"
               style={{
                 color: "var(--color-text-secondary)",
                 backgroundColor: "var(--color-background-secondary)",
-              }}
-              onMouseEnter={(e) => {
-                if (!isLoading) {
-                  e.target.style.backgroundColor =
-                    "var(--color-background-tertiary)";
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!isLoading) {
-                  e.target.style.backgroundColor =
-                    "var(--color-background-secondary)";
-                }
               }}
               disabled={isLoading}
             >
@@ -289,11 +327,21 @@ const CreateStudent = () => {
             </button>
             <button
               type="submit"
-              className="px-4 py-2 text-white rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50"
+              className="px-8 py-2.5 text-white rounded-xl font-bold shadow-lg shadow-blue-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2 disabled:opacity-70 disabled:hover:scale-100"
               style={{ backgroundColor: "var(--color-interactive-primary)" }}
               disabled={isLoading}
             >
-              {isLoading ? "Creating..." : "Create Student"}
+              {isLoading ? (
+                <>
+                  <ImSpinner2 className="w-5 h-5 animate-spin" />
+                  Creating...
+                </>
+              ) : (
+                <>
+                  <FaUserPlus className="w-5 h-5" />
+                  Add Student
+                </>
+              )}
             </button>
           </div>
         </form>

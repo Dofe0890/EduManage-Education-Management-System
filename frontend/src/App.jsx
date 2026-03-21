@@ -13,6 +13,8 @@ import { AuthProvider } from "./hooks/useAuth";
 import { AuthProvider as AuthContextProvider } from "./contexts/AuthContext";
 import { AppProvider, useApp } from "./contexts/AppContext";
 import { StudentProvider } from "./contexts/StudentContext";
+import { GradeProvider } from "./contexts/GradeContext";
+import { AttendanceProvider } from "./contexts/AttendanceContext";
 import Layout from "./components/layout/Layout";
 import RouteErrorBoundary from "./components/common/RouteErrorBoundary";
 import Loading from "./components/common/Loading";
@@ -33,7 +35,6 @@ import { studentsLoader } from "./loaders/studentsLoader";
 
 // Student Management
 import StudentsPage from "./pages/students/StudentsPage";
-import StudentDetails from "./pages/students/StudentDetails";
 import CreateStudent from "./pages/students/CreateStudent";
 import EditStudent from "./pages/students/EditStudent";
 
@@ -45,7 +46,6 @@ import ClassesPage from "./pages/classes/ClassesPage";
 
 // Teacher Management
 import TeachersPage from "./pages/teachers/TeachersPage";
-import TeacherDetails from "./pages/teachers/TeacherDetails";
 import CreateTeacher from "./pages/teachers/CreateTeacher";
 import EditTeacher from "./pages/teachers/EditTeacher";
 
@@ -58,20 +58,13 @@ import CreateGrade from "./pages/grades/CreateGrade";
 import EditGrade from "./pages/grades/EditGrade";
 
 // Attendance Management
-import AttendancePage from "./pages/attendance/AttendancePage";
+import AttendancesPage from "./pages/attendance/AttendancesPage";
 import MarkAttendance from "./pages/attendance/MarkAttendance";
-import AttendanceReports from "./pages/attendance/AttendanceReports";
 
 // User Management
 import UsersPage from "./pages/users/UsersPage";
 import CreateUser from "./pages/users/CreateUser";
 import EditUser from "./pages/users/EditUser";
-
-// Reports
-import ReportsPage from "./pages/reports/ReportsPage";
-import StudentReports from "./pages/reports/StudentReports";
-import AttendanceReportsPage from "./pages/reports/AttendanceReports";
-import GradeReports from "./pages/reports/GradeReports";
 
 // Settings
 import ProfilePage from "./pages/settings/ProfilePage";
@@ -189,11 +182,6 @@ function App() {
             errorElement: <RouteErrorBoundary />,
           },
           {
-            path: "students/:id",
-            element: <StudentDetails />,
-            errorElement: <RouteErrorBoundary />,
-          },
-          {
             path: "students/:id/edit",
             element: <EditStudent />,
             errorElement: <RouteErrorBoundary />,
@@ -208,11 +196,7 @@ function App() {
             element: <CreateTeacher />,
             errorElement: <RouteErrorBoundary />,
           },
-          {
-            path: "teachers/:id",
-            element: <TeacherDetails />,
-            errorElement: <RouteErrorBoundary />,
-          },
+
           {
             path: "teachers/:id/edit",
             element: <EditTeacher />,
@@ -226,34 +210,54 @@ function App() {
 
           {
             path: "grades",
-            element: <GradesPage />,
+            element: (
+              <GradeProvider>
+                <GradesPage />
+              </GradeProvider>
+            ),
             errorElement: <RouteErrorBoundary />,
           },
           {
             path: "grades/new",
-            element: <CreateGrade />,
+            element: (
+              <GradeProvider>
+                <CreateGrade />
+              </GradeProvider>
+            ),
             errorElement: <RouteErrorBoundary />,
           },
           {
             path: "grades/:id/edit",
-            element: <EditGrade />,
+            element: (
+              <GradeProvider>
+                <EditGrade />
+              </GradeProvider>
+            ),
             errorElement: <RouteErrorBoundary />,
           },
           {
             path: "attendance",
-            element: <AttendancePage />,
+            element: <Navigate to="/app/attendance/records" replace />,
+          },
+          {
+            path: "attendance/records",
+            element: (
+              <AttendanceProvider>
+                <AttendancesPage />
+              </AttendanceProvider>
+            ),
             errorElement: <RouteErrorBoundary />,
           },
           {
-            path: "attendance/new",
-            element: <MarkAttendance />,
+            path: "attendance/mark",
+            element: (
+              <AttendanceProvider>
+                <MarkAttendance />
+              </AttendanceProvider>
+            ),
             errorElement: <RouteErrorBoundary />,
           },
-          {
-            path: "attendance/reports",
-            element: <AttendanceReports />,
-            errorElement: <RouteErrorBoundary />,
-          },
+
           {
             path: "users",
             element: <UsersPage />,
@@ -269,26 +273,7 @@ function App() {
             element: <EditUser />,
             errorElement: <RouteErrorBoundary />,
           },
-          {
-            path: "reports",
-            element: <ReportsPage />,
-            errorElement: <RouteErrorBoundary />,
-          },
-          {
-            path: "reports/students",
-            element: <StudentReports />,
-            errorElement: <RouteErrorBoundary />,
-          },
-          {
-            path: "reports/attendance",
-            element: <AttendanceReportsPage />,
-            errorElement: <RouteErrorBoundary />,
-          },
-          {
-            path: "reports/grades",
-            element: <GradeReports />,
-            errorElement: <RouteErrorBoundary />,
-          },
+
           {
             path: "profile",
             element: <ProfilePage />,

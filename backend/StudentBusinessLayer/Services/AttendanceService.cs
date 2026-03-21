@@ -32,9 +32,16 @@ namespace StudentBusinessLayer.Services
             if (attendance.StudentId <= 0)
                 throw new ArgumentException("Student ID must be greater than 0.", nameof(attendance.StudentId));
 
+            if (attendance.ClassroomId == null || attendance.ClassroomId <= 0)
+                throw new ArgumentException("Classroom ID must be greater than 0.", nameof(attendance.ClassroomId));
+
             var isStudentExist = await _unitOfWork.Students.GetByIDAsync(attendance.StudentId);
             if (isStudentExist == null)
                 throw new KeyNotFoundException($"Student with ID {attendance.StudentId} not found.");
+
+            var isClassroomExist = await _unitOfWork.Classrooms.GetByIDAsync(attendance.ClassroomId.Value);
+            if (isClassroomExist == null)
+                throw new KeyNotFoundException($"Classroom with ID {attendance.ClassroomId} not found.");
 
             var result = await _unitOfWork.Attendance.AddRecordAsync(attendance);
             await _unitOfWork.Complete();
@@ -89,6 +96,11 @@ namespace StudentBusinessLayer.Services
                 query = query.Where(a => a.IsPresent == filter.isPresent.Value);
             }
 
+            if (filter.classroomId.HasValue)
+            {
+                query = query.Where(a => a.ClassroomId == filter.classroomId.Value);
+            }
+
 
             query = query.ApplySorting(filter.orderBy, filter.isDescending);
             query = query.ApplyPagination(filter.page, filter.limit);
@@ -101,6 +113,62 @@ namespace StudentBusinessLayer.Services
         public async Task<Attendance> GetAttendanceById(int id)
         {
             return await _unitOfWork.Attendance.GetByIDAsync(id);
+        }
+
+        public async Task<Attendance> UpdateAttendance(int id, Attendance attendance)
+        {
+            if (id <= 0)
+                throw new ArgumentException("Attendance ID must be greater than 0.", nameof(id));
+
+            if (attendance == null)
+                throw new ArgumentNullException(nameof(attendance), "Attendance cannot be null.");
+
+            var existing = await _unitOfWork.Attendance.GetByIDAsync(id);
+            if (existing == null)
+                throw new KeyNotFoundException($"Attendance with ID {id} not found.");
+
+            existing.StudentId = attendance.StudentId;
+            existing.ClassroomId = attendance.ClassroomId;
+            existing.Date = attendance.Date;
+            existing.IsPresent = attendance.IsPresent;
+
+            await _unitOfWork.Complete();
+            return existing;
+        }
+
+        public async Task<IEnumerable<Attendance>> BulkUpdateAttendance(IEnumerable<Attendance> attendances)
+        {
+            if (attendances == null || !attendances.Any())
+                throw new ArgumentNullException(nameof(attendances), "Attendance records cannot be null or empty.");
+
+            var results = new List<Attendance>();
+
+            foreach (var attendance in attendances)
+            {
+                if (attendance.StudentId <= 0)
+                    throw new ArgumentException("Student ID must be greater than 0.", nameof(attendance.StudentId));
+
+                if (attendance.ClassroomId == null || attendance.ClassroomId <= 0)
+                    throw new ArgumentException("Classroom ID must be greater than 0.", nameof(attendance.ClassroomId));
+
+                var existing = await _unitOfWork.Attendance
+                    .Query()
+                    .FirstOrDefaultAsync(a => a.StudentId == attendance.StudentId && a.ClassroomId == attendance.ClassroomId && a.Date.Date == attendance.Date.Date);
+
+                if (existing != null)
+                {
+                    existing.IsPresent = attendance.IsPresent;
+                    results.Add(existing);
+                }
+                else
+                {
+                    var result = await _unitOfWork.Attendance.AddRecordAsync(attendance);
+                    results.Add(result);
+                }
+            }
+
+            await _unitOfWork.Complete();
+            return results;
         }
 
     

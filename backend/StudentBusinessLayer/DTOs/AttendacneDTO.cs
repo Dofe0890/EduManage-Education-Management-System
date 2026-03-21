@@ -13,6 +13,7 @@ namespace StudentBusinessLayer.DTOs
     {
         Present,
         Absent,
+        Late,
         Excused
     }
     public class AttendanceDTO
@@ -21,6 +22,12 @@ namespace StudentBusinessLayer.DTOs
 
         [Required]
         public int studentId { get; set; }
+
+        public string? studentName { get; set; }
+
+        public int? classroomId { get; set; }
+
+        public string? classroomName { get; set; }
 
         public bool isPresent { get; set; } = true;
 

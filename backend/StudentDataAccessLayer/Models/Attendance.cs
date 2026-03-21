@@ -13,6 +13,9 @@ namespace StudentDataAccessLayer.Models
         public int StudentId { get; set; }
         public Student Student { get; set; }
 
+        public int? ClassroomId { get; set; }
+        public Classroom Classroom { get; set; }
+
         public DateTime Date { get; set; } = DateTime.UtcNow;
         public bool IsPresent { get; set; } 
        

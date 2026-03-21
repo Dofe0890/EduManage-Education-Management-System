@@ -82,10 +82,7 @@ const EditStudentModal = ({ isOpen, onClose, student, onUpdate }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div
-        className="rounded-lg shadow-xl w-full max-w-md mx-4"
-        style={{ backgroundColor: "var(--color-surface-primary)" }}
-      >
+      <div className="rounded-lg shadow-xl w-full max-w-md mx-4 bg-[var(--color-background-primary)]">
         {/* Header */}
         <div
           className="flex items-center justify-between p-6 border-b"

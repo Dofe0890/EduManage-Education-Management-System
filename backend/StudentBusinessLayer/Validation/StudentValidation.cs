@@ -64,6 +64,9 @@ namespace StudentBusinessLayer.Validation
             RuleFor(x => x.studentId)
                 .GreaterThan(0).WithMessage("Student ID must be greater than 0");
 
+            RuleFor(x => x.classroomId)
+                .GreaterThan(0).WithMessage("Classroom ID must be greater than 0");
+
             RuleFor(x => x.date)
                 .NotEmpty().WithMessage("Date is required")
                 .LessThanOrEqualTo(DateTime.Today).WithMessage("Attendance date cannot be in the future");

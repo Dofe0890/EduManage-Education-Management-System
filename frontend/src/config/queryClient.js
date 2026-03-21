@@ -55,8 +55,7 @@ export const createQueryClient = () => {
         },
 
         // Error handling
-        onError: (error) => {
-        },
+        onError: (error) => {},
       },
 
       // Global defaults
@@ -132,10 +131,16 @@ export const queryKeys = {
   // Grade queries
   grades: ["grades"],
   grade: (id) => ["grades", id],
+  gradesListPrefix: ["grades", "list"],
+  gradesList: (params) => ["grades", "list", params],
 
   // Attendance queries
   attendance: ["attendance"],
   attendanceByClass: (classId) => ["attendance", "classes", classId],
+  attendanceListPrefix: ["attendance", "list"],
+  attendanceList: (params) => ["attendance", "list", params],
+  attendanceByDate: (date) => ["attendance", "date", date],
+  attendanceByStudent: (studentId) => ["attendance", "student", studentId],
 };
 
 // Helper functions for invalidating queries

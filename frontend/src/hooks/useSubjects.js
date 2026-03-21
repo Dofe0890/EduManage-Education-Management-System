@@ -8,7 +8,7 @@ export const useSubjects = (params = {}) => {
     queryKey: queryKeys.subjectsList(params),
     queryFn: () => subjectService.getAll(params),
     staleTime: 5 * 60 * 1000, // 5 minutes
-    cacheTime: 10 * 60 * 1000, // 10 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime in v4)
     keepPreviousData: true,
     refetchOnWindowFocus: false,
   });
@@ -21,6 +21,6 @@ export const useSubject = (id) => {
     queryFn: () => subjectService.getById(id),
     enabled: !!id, // Only run query if ID is provided
     staleTime: 5 * 60 * 1000, // 5 minutes
-    cacheTime: 10 * 60 * 1000, // 10 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime in v4)
   });
 };

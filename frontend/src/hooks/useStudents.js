@@ -9,6 +9,8 @@ export const useStudents = (filters) => {
     queryKey: queryKeys.studentsList(filters),
     queryFn: () => studentService.getAll(filters),
     keepPreviousData: true,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
   });
 };
 
@@ -17,6 +19,8 @@ export const useStudent = (id) => {
     queryKey: queryKeys.student(id),
     queryFn: () => studentService.getById(id),
     enabled: !!id,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
   });
 };
 

@@ -6,6 +6,8 @@ public class AttendanceFilterDTO:BaseFilterDTO
 
     public int? studentId { get; set; }
 
+    public int? classroomId { get; set; }
+
     public DateTime? fromDate { get; set; } 
 
     public DateTime? toDate { get; set; }

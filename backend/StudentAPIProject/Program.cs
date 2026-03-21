@@ -19,11 +19,16 @@ using StudentBusinessLayer.Validation;
 using StudentBusinessLayer.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using FluentValidation.AspNetCore;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
 
 // Configure CORS
@@ -224,32 +229,27 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 // Health check endpoint (for Docker health checks and monitoring)
-app.MapGet("/health", async (ApplicationDbContext dbContext) =>
-{
-    try
-    {
-        // Try to connect to the database
-        await dbContext.Database.ExecuteSqlRawAsync("SELECT 1");
-        return Results.Ok(new 
-        { 
-            status = "healthy", 
-            timestamp = DateTime.UtcNow,
-            environment = app.Environment.EnvironmentName
-        });
-    }
-    catch (Exception ex)
-    {
-        return Results.StatusCode(503, new 
-        { 
-            status = "unhealthy", 
-            message = "Database connection failed",
-            timestamp = DateTime.UtcNow
-        });
-    }
-})
-.WithName("Health")
-.WithOpenApi()
-.AllowAnonymous();
+// app.MapGet("/health", async (ApplicationDbContext dbContext) =>
+// {
+//     try
+//     {
+//         // Try to connect to the database
+//         await dbContext.Database.ExecuteSqlRawAsync("SELECT 1");
+//         return Results.Ok(new 
+//         { 
+//             status = "healthy", 
+//             timestamp = DateTime.UtcNow,
+//             environment = app.Environment.EnvironmentName
+//         });
+//     }
+//     catch (Exception ex)
+//     {
+//         return Results.StatusCode(503);
+//     }
+// })
+// .WithName("Health")
+// .WithOpenApi()
+// .AllowAnonymous();
 
 app.MapControllers();
 

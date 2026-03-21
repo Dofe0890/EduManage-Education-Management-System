@@ -36,7 +36,16 @@ namespace StudentBusinessLayer.Mappings
                 .ForMember(dest => dest.TeacherAssignedClasses, opt => opt.MapFrom(src => src.TeacherClasses.Select(tc => tc.Classroom)));
             CreateMap<Classroom, ClassroomDTOWithDetails>().ForMember(dest => dest.Teachers, opt => opt.MapFrom(src => src.TeacherClasses.Select(tc => tc.Teacher)));
             CreateMap<Classroom, ClassroomDTO>().ReverseMap();
-            CreateMap< Attendance ,AttendanceDTO>().ReverseMap();
+            CreateMap<Attendance, AttendanceDTO>()
+                .ForMember(dest => dest.date, opt => opt.MapFrom(src => src.Date))
+                .ForMember(dest => dest.studentName, opt => opt.MapFrom(src => src.Student != null ? src.Student.Name : null))
+                .ForMember(dest => dest.classroomName, opt => opt.MapFrom(src => src.Classroom != null ? src.Classroom.Name : null));
+            
+            CreateMap<AttendanceDTO, Attendance>()
+                .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.date))
+                .ForMember(dest => dest.IsPresent, opt => opt.MapFrom(src => src.isPresent))
+                .ForMember(dest => dest.Student, opt => opt.Ignore())
+                .ForMember(dest => dest.Classroom, opt => opt.Ignore());
             CreateMap<Subject, SubjectDTO>().ReverseMap ();
             CreateMap<Grade, GradeDTO>().ReverseMap();
             CreateMap<Grade, GradeWithDetailsDTO>().ReverseMap();
