@@ -20,6 +20,7 @@ using StudentBusinessLayer.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using FluentValidation.AspNetCore;
 using System.Text.Json.Serialization;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,26 +31,53 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
-
-// Configure CORS
-builder.Services.AddCors(options =>
+builder.Services.AddSwaggerGen(options =>
 {
-    options.AddPolicy("DevelopmentPolicy", policy =>
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        policy.WithOrigins("http://localhost:3000", "http://localhost:4200", "http://localhost:5000", "http://localhost:5176")
-              .AllowAnyMethod()
-              .AllowAnyHeader()
-              .AllowCredentials();
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter JWT token like: Bearer {your token}"
     });
-    
-    options.AddPolicy("ProductionPolicy", policy =>
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
-        policy.WithOrigins("https://edumange.vercel.app") // Replace with your production domain
-              .AllowAnyMethod()
-              .AllowAnyHeader()
-              .AllowCredentials();
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
     });
 });
+
+// Configure CORS
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("DevelopmentPolicy", policy =>
+//    {
+//        policy.WithOrigins("http://localhost:3000", "http://localhost:4200", "http://localhost:5000", "http://localhost:5176")
+//              .AllowAnyMethod()
+//              .AllowAnyHeader()
+//              .AllowCredentials();
+//    });
+
+//    options.AddPolicy("ProductionPolicy", policy =>
+//    {
+//        policy.WithOrigins("https://edumange.vercel.app") // Replace with your production domain
+//              .AllowAnyMethod()
+//              .AllowAnyHeader()
+//              .AllowCredentials();
+//    });
+//});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

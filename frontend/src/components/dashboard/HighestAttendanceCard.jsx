@@ -1,47 +1,80 @@
 import React from "react";
-import { FiCheckCircle, FiUsers } from "react-icons/fi";
+import { FiCheckCircle, FiUsers, FiCalendar } from "react-icons/fi";
 
 const HighestAttendanceCard = ({ data }) => {
   const metric = data?.highestAttendanceClass;
 
   return (
-    <div className="card h-full border-none shadow-sm hover:shadow-md transition-all duration-300 bg-gradient-to-br from-white to-green-50/30 dark:from-gray-800 dark:to-gray-800/50">
-      <div className="card-header border-none pb-0">
-        <div className="flex items-center space-x-2">
-          <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
+    <div className="card h-full border-none shadow-sm hover:shadow-lg transition-all duration-300 bg-gradient-to-br relative overflow-hidden group" style={{
+      backgroundColor: "var(--color-surface-primary)",
+      backgroundImage: "linear-gradient(to bottom right, var(--color-surface-primary), var(--color-background-secondary))"
+    }}>
+      <div className="absolute top-0 right-0 w-24 h-24 rounded-full -mr-8 -mt-8 group-hover:scale-150 transition-transform duration-500" style={{ backgroundColor: "var(--color-success)", opacity: 0.1 }}></div>
+      <div className="card-header border-none pb-0 relative z-10">
+        <div className="flex items-center space-x-3">
+          <div className="p-2.5 rounded-xl shadow-sm" style={{ backgroundColor: "var(--color-success-light)" }}>
             <FiCheckCircle
-              className="text-green-600 dark:text-green-400"
-              size={20}
+              style={{ color: "var(--color-success)" }}
+              size={22}
             />
           </div>
-          <h3 className="text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-            Top Attendance
-          </h3>
+          <div>
+            <h3 className="text-sm font-bold uppercase tracking-wider" style={{ color: "var(--color-text-secondary)" }}>
+              Top Attendance
+            </h3>
+            <p className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>Class Attendance</p>
+          </div>
         </div>
       </div>
-      <div className="card-body pt-4">
+      <div className="card-body pt-5 relative z-10">
         {metric ? (
-          <div className="space-y-3">
-            <div>
+          <div className="space-y-4">
+            <div className="p-4 rounded-2xl shadow-lg" style={{ background: "linear-gradient(to right, var(--color-success), #059669)" }}>
               <div className="flex items-baseline space-x-1">
-                <span className="text-4xl font-extrabold text-gray-900 dark:text-white leading-none">
+                <span className="text-5xl font-extrabold text-white leading-none drop-shadow-sm">
                   {metric.attendancePercentage?.toFixed(1)}
                 </span>
-                <span className="text-xl font-bold text-green-600 dark:text-green-400">
+                <span className="text-2xl font-bold text-green-100">
                   %
                 </span>
               </div>
             </div>
-            <div className="flex items-center p-3 bg-white dark:bg-gray-700/50 rounded-xl border border-green-100/50 dark:border-green-900/20">
-              <FiUsers className="text-blue-500 mr-2 flex-shrink-0" size={18} />
-              <p className="text-sm font-medium text-gray-700 dark:text-gray-200 truncate">
-                {metric.className}
-              </p>
+            <div className="flex items-center p-4 rounded-xl border shadow-sm" style={{ 
+              backgroundColor: "var(--color-surface-primary)",
+              borderColor: "var(--color-border-primary)"
+            }}>
+              <div className="p-2 rounded-lg mr-3" style={{ backgroundColor: "var(--color-info-light)" }}>
+                <FiUsers style={{ color: "var(--color-info)" }} size={20} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold truncate" style={{ color: "var(--color-text-primary)" }}>
+                  {metric.className}
+                </p>
+                <p className="text-xs" style={{ color: "var(--color-text-secondary)" }}>Best Attendance Record</p>
+              </div>
             </div>
+            {metric.totalStudents && (
+              <div className="flex items-center justify-between text-xs">
+                <div className="flex items-center" style={{ color: "var(--color-text-secondary)" }}>
+                  <FiUsers className="mr-1" size={14} />
+                  <span>{metric.totalStudents} Students</span>
+                </div>
+                <div className="flex items-center" style={{ color: "var(--color-text-secondary)" }}>
+                  <FiCalendar className="mr-1" size={14} />
+                  <span>Last 30 days</span>
+                </div>
+              </div>
+            )}
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center py-4 text-center">
-            <p className="text-sm text-gray-400 italic">No attendance data</p>
+          <div className="flex flex-col items-center justify-center py-8 text-center">
+            <div className="p-4 rounded-full mb-3" style={{ backgroundColor: "var(--color-background-secondary)" }}>
+              <FiCheckCircle style={{ color: "var(--color-text-tertiary)" }} size={28} />
+            </div>
+            <p className="text-sm font-medium" style={{ color: "var(--color-text-secondary)" }}>No attendance data</p>
+            <p className="text-xs mt-1" style={{ color: "var(--color-text-tertiary)" }}>
+              Attendance will be tracked daily
+            </p>
           </div>
         )}
       </div>

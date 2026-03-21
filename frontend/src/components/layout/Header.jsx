@@ -284,7 +284,7 @@ const Header = ({ sidebarOpen, setSidebarOpen, isDark, toggleTheme }) => {
                   >
                     <div className="py-1">
                       <Link
-                        to="/profile"
+                        to="/app/profile"
                         className="flex items-center px-4 py-2 text-sm transition-colors"
                         style={{ color: "var(--color-text-secondary)" }}
                         onClick={() => setShowUserMenu(false)}

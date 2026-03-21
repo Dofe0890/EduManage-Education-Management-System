@@ -122,12 +122,16 @@ namespace StudentManagementAPI.Controllers
             }
         }
 
-        [HttpGet("me/dashboard-metrics")]
+        [HttpGet("me/dashboard/metrics")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<StudentBusinessLayer.DTOs.TeacherDashboardMetricsDto>> GetMyDashboardMetrics([FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate)
         {
+
+            Console.WriteLine("Auth: " + User.Identity.IsAuthenticated);
+            Console.WriteLine("UserId: " + User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
             var currentUserId = User.FindFirst("uid")?.Value;
             if (string.IsNullOrEmpty(currentUserId))
                 return Unauthorized("Invalid user.");

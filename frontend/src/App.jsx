@@ -36,7 +36,6 @@ import { studentsLoader } from "./loaders/studentsLoader";
 // Student Management
 import StudentsPage from "./pages/students/StudentsPage";
 import CreateStudent from "./pages/students/CreateStudent";
-import EditStudent from "./pages/students/EditStudent";
 
 // All Classes Page
 import { classesLoader } from "./loaders/classesLoader";
@@ -139,7 +138,7 @@ function App() {
           {
             path: "dashboard",
             element: <DashboardPage />,
-            loader: dashboardLoader(queryClient),
+            loader: dashboardLoader,
             errorElement: <RouteErrorBoundary />,
           },
           {
@@ -181,11 +180,7 @@ function App() {
             ),
             errorElement: <RouteErrorBoundary />,
           },
-          {
-            path: "students/:id/edit",
-            element: <EditStudent />,
-            errorElement: <RouteErrorBoundary />,
-          },
+
           {
             path: "teachers",
             element: <TeachersPage />,

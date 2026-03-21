@@ -138,12 +138,10 @@ const CreateGrade = () => {
 
         // OPTIMIZATION: Invalidate React Query cache to fetch fresh grades data
         // Use predicate to match nested key structure: ["grades", "list", {...}]
-        console.log("🔄 Invalidating ALL grades queries after create...");
         await queryClient.invalidateQueries({
           predicate: (query) =>
             query.queryKey[0] === "grades" && query.queryKey[1] === "list",
         });
-        console.log("✅ Grades cache invalidated - will refetch fresh data");
 
         // BUG FIX: Clear local cache to prevent stale data on next filter/search
         clearGradesCache();

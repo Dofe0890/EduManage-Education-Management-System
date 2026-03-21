@@ -11,37 +11,40 @@ import {
 const StatCard = memo(({ title, value, icon: Icon, trend, color }) => {
   const displayValue = value !== undefined && value !== null ? value : "0";
 
-  const colorClasses = {
-    blue: "bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400",
-    indigo:
-      "bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20 dark:text-indigo-400",
-    amber:
-      "bg-amber-50 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400",
+  const colorStyles = {
+    blue: { bg: "#eff6ff", text: "#3b82f6" },
+    indigo: { bg: "#eef2ff", text: "#6366f1" },
+    amber: { bg: "#fffbeb", text: "#f59e0b" },
   };
 
+  const colors = colorStyles[color] || colorStyles.blue;
+
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all group">
+    <div className="rounded-2xl p-6 shadow-sm border hover:shadow-md transition-all group" style={{ 
+      backgroundColor: "var(--color-surface-primary)",
+      borderColor: "var(--color-border-primary)"
+    }}>
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+          <p className="text-sm font-semibold uppercase tracking-wider mb-1" style={{ color: "var(--color-text-secondary)" }}>
             {title}
           </p>
           <div className="flex items-baseline space-x-2">
-            <h3 className="text-3xl font-bold text-gray-900 dark:text-white">
+            <h3 className="text-3xl font-bold" style={{ color: "var(--color-text-primary)" }}>
               {displayValue}
             </h3>
             {trend && (
               <span
-                className={`flex items-center text-xs font-bold px-2 py-0.5 rounded-full ${
-                  trend.type === "positive"
-                    ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                    : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
-                }`}
+                className="flex items-center text-xs font-bold px-2 py-0.5 rounded-full"
+                style={{
+                  backgroundColor: trend.type === "positive" ? "var(--color-success-light)" : "var(--color-error-light)",
+                  color: trend.type === "positive" ? "var(--color-success)" : "var(--color-error)"
+                }}
               >
                 {trend.type === "positive" ? (
-                  <FiTrendingUp className="mr-1" />
+                  <FiTrendingUp className="mr-1" size={12} />
                 ) : (
-                  <FiTrendingDown className="mr-1" />
+                  <FiTrendingDown className="mr-1" size={12} />
                 )}
                 {trend.value}
               </span>
@@ -49,7 +52,8 @@ const StatCard = memo(({ title, value, icon: Icon, trend, color }) => {
           </div>
         </div>
         <div
-          className={`p-4 rounded-xl transition-transform group-hover:scale-110 ${colorClasses[color] || colorClasses.blue}`}
+          className="p-4 rounded-xl transition-transform group-hover:scale-110"
+          style={{ backgroundColor: colors.bg, color: colors.text }}
         >
           <Icon size={24} />
         </div>
@@ -60,19 +64,25 @@ const StatCard = memo(({ title, value, icon: Icon, trend, color }) => {
 
 const ClassBreakdownCard = memo(({ classData }) => {
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-100 dark:border-gray-700 shadow-sm hover:border-primary-500 dark:hover:border-primary-400 transition-all group">
+    <div className="rounded-xl p-5 border shadow-sm hover:shadow-md transition-all group" style={{ 
+      backgroundColor: "var(--color-surface-primary)",
+      borderColor: "var(--color-border-primary)"
+    }}>
       <div className="flex items-center justify-between mb-3">
-        <div className="p-2 bg-gray-50 dark:bg-gray-700 rounded-lg group-hover:bg-primary-50 dark:group-hover:bg-primary-900/20 transition-colors">
-          <FiBookOpen className="text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400" />
+        <div className="p-2 rounded-lg transition-colors" style={{ backgroundColor: "var(--color-background-secondary)" }}>
+          <FiBookOpen style={{ color: "var(--color-text-tertiary)" }} />
         </div>
-        <span className="text-xs font-bold px-2 py-1 bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300 rounded-lg">
+        <span className="text-xs font-bold px-2 py-1 rounded-lg" style={{ 
+          backgroundColor: "var(--color-interactive-primary)", 
+          color: "white" 
+        }}>
           {classData.studentCount} Students
         </span>
       </div>
-      <h4 className="font-bold text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+      <h4 className="font-bold transition-colors" style={{ color: "var(--color-text-primary)" }}>
         {classData.className}
       </h4>
-      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+      <p className="text-sm mt-1" style={{ color: "var(--color-text-secondary)" }}>
         {classData.subject}
       </p>
     </div>
@@ -99,15 +109,18 @@ const TeacherStudentCountDashboard = memo(({ teacherStudentCount }) => {
 
   if (error) {
     return (
-      <div className="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 rounded-2xl p-6 flex items-center space-x-4">
-        <div className="p-3 bg-red-100 dark:bg-red-800 rounded-full text-red-600 dark:text-red-300">
+      <div className="rounded-2xl p-6 flex items-center space-x-4" style={{ 
+        backgroundColor: "var(--color-error-light)",
+        borderColor: "var(--color-error)"
+      }}>
+        <div className="p-3 rounded-full" style={{ backgroundColor: "var(--color-error)", color: "white" }}>
           <FiAlertCircle size={24} />
         </div>
         <div>
-          <h3 className="font-bold text-red-900 dark:text-red-200">
+          <h3 className="font-bold" style={{ color: "var(--color-error)" }}>
             Unable to load metrics
           </h3>
-          <p className="text-sm text-red-700 dark:text-red-300 mt-1">
+          <p className="text-sm mt-1" style={{ color: "var(--color-error)" }}>
             Please refresh the page to try again.
           </p>
         </div>
@@ -117,7 +130,6 @@ const TeacherStudentCountDashboard = memo(({ teacherStudentCount }) => {
 
   return (
     <div className="space-y-8">
-      {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <StatCard
           title="Total Students"
@@ -148,14 +160,13 @@ const TeacherStudentCountDashboard = memo(({ teacherStudentCount }) => {
         />
       </div>
 
-      {/* Class Breakdown */}
       {classBreakdown && classBreakdown.length > 0 && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+            <h2 className="text-xl font-bold" style={{ color: "var(--color-text-primary)" }}>
               My Classes
             </h2>
-            <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest">
+            <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: "var(--color-text-tertiary)" }}>
               {classBreakdown.length} Active
             </span>
           </div>
@@ -171,18 +182,17 @@ const TeacherStudentCountDashboard = memo(({ teacherStudentCount }) => {
         </div>
       )}
 
-      {/* Summary Insights */}
       {data && (
-        <div className="bg-gradient-to-br from-gray-900 to-gray-800 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-6 text-white shadow-lg overflow-hidden relative">
+        <div className="rounded-2xl p-6 shadow-lg overflow-hidden relative" style={{ background: "linear-gradient(to bottom right, var(--color-neutral-800), var(--color-neutral-900))" }}>
           <div className="relative z-10">
-            <h3 className="text-lg font-bold mb-2">Teaching Insights</h3>
-            <p className="text-gray-300 text-sm leading-relaxed max-w-2xl">
+            <h3 className="text-lg font-bold mb-2" style={{ color: "white" }}>Teaching Insights</h3>
+            <p className="text-sm leading-relaxed max-w-2xl" style={{ color: "rgba(255,255,255,0.8)" }}>
               You're currently managing{" "}
-              <span className="text-white font-bold">
+              <span style={{ color: "white", fontWeight: "bold" }}>
                 {totalStudents} students
               </span>{" "}
               across{" "}
-              <span className="text-white font-bold">
+              <span style={{ color: "white", fontWeight: "bold" }}>
                 {totalClasses} classes
               </span>
               .
@@ -191,7 +201,7 @@ const TeacherStudentCountDashboard = memo(({ teacherStudentCount }) => {
                 : " Your student-to-class ratio is optimal for personalized instruction."}
             </p>
           </div>
-          <FiTrendingUp className="absolute right-[-20px] bottom-[-20px] text-white/5 w-40 h-40" />
+          <FiTrendingUp className="absolute right-[-20px] bottom-[-20px]" style={{ color: "rgba(255,255,255,0.05)", width: 160, height: 160 }} />
         </div>
       )}
     </div>

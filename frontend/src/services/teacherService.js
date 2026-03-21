@@ -81,9 +81,10 @@ export const teacherService = {
   // Get dashboard metrics scoped to authenticated teacher
   getDashboardMetrics: async (params = {}) => {
     try {
-      const response = await api.get(`/teachers/me/dashboard-metrics`, {
+      const response = await api.get(`/teachers/me/dashboard/metrics`, {
         params,
       });
+      console.log("Dashboard Metrics Response:", response.data);
       return response.data;
     } catch (err) {
       // Return a plain object error instead of throwing Error
