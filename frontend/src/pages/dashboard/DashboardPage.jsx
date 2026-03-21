@@ -186,13 +186,13 @@ const DashboardPage = () => {
           </div>
           <div className="flex items-center space-x-3">
             <button
-              onClick={() => navigate("/attendance")}
+              onClick={() => navigate("/app/attendance/mark")}
               className="flex items-center px-4 py-2 bg-white/20 hover:bg-white/30 backdrop-blur-md rounded-lg transition-all text-sm font-medium border border-white/10"
             >
               <FiCheckCircle className="mr-2" /> Mark Attendance
             </button>
             <button
-              onClick={() => navigate("/grades/create")}
+              onClick={() => navigate("/app/grades/new")}
               className="flex items-center px-4 py-2 bg-white text-primary-600 hover:bg-primary-50 rounded-lg transition-all text-sm font-medium shadow-sm"
             >
               <FiPlus className="mr-2" /> New Grade
@@ -230,7 +230,6 @@ const DashboardPage = () => {
               />
             </div>
           </div>
-          <SubjectLabel subject={subject} />
         </div>
 
         <div className="lg:col-span-1">
@@ -313,28 +312,28 @@ const DashboardPage = () => {
                   desc: "Register new",
                   icon: FiUsers,
                   color: "blue",
-                  path: "/students/create",
+                  path: "/app/students/new",
                 },
                 {
                   label: "Mark Attendance",
                   desc: "Daily tracker",
                   icon: FiCalendar,
                   color: "green",
-                  path: "/attendance",
+                  path: "/app/attendance/mark",
                 },
                 {
                   label: "Add Grades",
                   desc: "Update records",
                   icon: FiAward,
                   color: "purple",
-                  path: "/grades/create",
+                  path: "/app/grades/new",
                 },
                 {
-                  label: "Reports",
-                  desc: "View analytics",
+                  label: "Subjects",
+                  desc: "Subjects analytics",
                   icon: FiFileText,
                   color: "orange",
-                  path: "/reports",
+                  path: "/app/subjects",
                 },
               ].map((action) => {
                 const Icon = action.icon;
