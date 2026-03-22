@@ -60,24 +60,24 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 // Configure CORS
-//builder.Services.AddCors(options =>
-//{
-//    options.AddPolicy("DevelopmentPolicy", policy =>
-//    {
-//        policy.WithOrigins("http://localhost:3000", "http://localhost:4200", "http://localhost:5000", "http://localhost:5176")
-//              .AllowAnyMethod()
-//              .AllowAnyHeader()
-//              .AllowCredentials();
-//    });
+builder.Services.AddCors(options =>
+{
+   options.AddPolicy("DevelopmentPolicy", policy =>
+   {
+       policy.WithOrigins("http://localhost:3000", "http://localhost:4200", "http://localhost:5000", "http://localhost:5176")
+             .AllowAnyMethod()
+             .AllowAnyHeader()
+             .AllowCredentials();
+   });
 
-//    options.AddPolicy("ProductionPolicy", policy =>
-//    {
-//        policy.WithOrigins("https://edumange.vercel.app") // Replace with your production domain
-//              .AllowAnyMethod()
-//              .AllowAnyHeader()
-//              .AllowCredentials();
-//    });
-//});
+   options.AddPolicy("ProductionPolicy", policy =>
+   {
+       policy.WithOrigins("https://edumange.vercel.app") // Replace with your production domain
+             .AllowAnyMethod()
+             .AllowAnyHeader()
+             .AllowCredentials();
+   });
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
