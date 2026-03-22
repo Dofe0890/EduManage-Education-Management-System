@@ -72,7 +72,7 @@ builder.Services.AddCors(options =>
 
    options.AddPolicy("ProductionPolicy", policy =>
    {
-       policy.WithOrigins("https://edumange.vercel.app") // Replace with your production domain
+       policy.WithOrigins("https://edu-manage-orcin.vercel.app") // Replace with your production domain
              .AllowAnyMethod()
              .AllowAnyHeader()
              .AllowCredentials();
